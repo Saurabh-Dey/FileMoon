@@ -8,8 +8,13 @@ mongoose.connect(process.env.DB)
 
 // 3rd layer(server create)
 const express = require('express');
+const { signup } = require('./controller/user.controller');
 const app = express();
 app.listen(process.env.PORT || 8080)
 
 // 4th layer (middlewares)
+app.use(express.json())
+app.use(express.urlencoded({extended: false}))
 app.use(express.static('view'))
+
+app.post('/signup', signup)
