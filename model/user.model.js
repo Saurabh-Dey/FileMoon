@@ -1,4 +1,5 @@
 const {Schema, model} = require('mongoose')
+const bcrypt = require('bcrypt')
 
 const userSchema = new Schema({
     fullname: {
@@ -9,7 +10,7 @@ const userSchema = new Schema({
     },
     mobile: {
         type: String,
-        trime: true,
+        trim: true,
         required: true
     },
     email: {
@@ -28,6 +29,23 @@ const userSchema = new Schema({
     }
 }, {timestamps: true})
 
-const UserModel = model("User", userSchema)
+// checking duplicate mobile
+userSchema.pre('save', async function() {
+    const count = await model('User').countDocuments({mobile: this.mobile})
+    if(count > 0)
+        throw new Error('Mobile number already exist')
+})
+// checking duplicate email
+userSchema.pre('save', async function() {
+    const count = await model('User').countDocuments({email: this.email})
+    if(count > 0)
+        throw new Error('Email already exist')
+})
+// password encrypt before store
+userSchema.pre('save', async function() {
+    const encryptedPassword = await bcrypt.hash(this.password.toString(), 12) 
+    this.password = encryptedPassword
+})
 
+const UserModel = model("User", userSchema)
 module.exports = UserModel
