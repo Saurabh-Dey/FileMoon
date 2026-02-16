@@ -9,6 +9,7 @@ mongoose.connect(process.env.DB)
 // 3rd layer(server create)
 const express = require('express');
 const {v4: uniqueId} = require('uuid')
+const cors = require('cors')
 
 const multer = require('multer')
 const storage = multer.diskStorage({
@@ -33,6 +34,9 @@ app.listen(process.env.PORT || 8080)
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(express.static('view'))
+app.use(cors({
+    origin: 'http://127.0.0.1:5500'
+}))
 
 app.post('/signup', signup)
 app.post('/login', login)
