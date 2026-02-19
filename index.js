@@ -27,6 +27,7 @@ const upload = multer({storage: storage})
 
 const { signup, login } = require('./controller/user.controller');
 const { createFile, fetchFiles, deleteFile, downloadFile } = require('./controller/file.controller');
+const { fetchDashboard } = require('./controller/dashboard.controller');
 const app = express();
 app.listen(process.env.PORT || 8080)
 
@@ -44,3 +45,4 @@ app.post('/file', upload.single('file'), createFile)
 app.get('/file', fetchFiles)
 app.delete('/file/:id', deleteFile)
 app.get('/file/download/:id', downloadFile)
+app.get('/dashboard', fetchDashboard)
